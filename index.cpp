@@ -11,32 +11,43 @@ struct Kamar
 
 Kamar *head = nullptr;
 
-void Login() {
+void Login()
+{
     string username, password;
-    
-    do {
+
+    do
+    {
         cout << "Masukkan username: ";
         cin >> username;
         cout << "Masukkan password: ";
         cin >> password;
 
-        if (username.empty() || password.empty()) {
+        if (username.empty() || password.empty())
+        {
             cout << "Username dan password harus diisi." << endl;
-        } else if (username == "admin" && password == "admin") {
+        }
+        else if (username == "admin" && password == "admin")
+        {
             system("cls");
             return;
-        } else {
-            if (username != "admin" && password != "admin") {
+        }
+        else
+        {
+            if (username != "admin" && password != "admin")
+            {
                 cout << "Username dan password salah." << endl;
-            } else if (username != "admin") {
+            }
+            else if (username != "admin")
+            {
                 cout << "Username salah." << endl;
-            } else {
+            }
+            else
+            {
                 cout << "Password salah." << endl;
             }
         }
     } while (true);
 }
-
 
 void Menu()
 {
@@ -50,6 +61,7 @@ void Menu()
 
 void KamarTersedia()
 {
+    system("cls");
     if (head == nullptr)
     {
         cout << "Belum ada kamar yang tersedia." << endl;
@@ -68,8 +80,13 @@ void KamarTersedia()
 
         current = current->next;
     }
+    cout << endl
+         << "Tekan enter untuk kembali ke menu...";
+    cin.ignore();
+    cin.get();
 }
 
+// fungsi ini buat nampilin kamar yang tersedia ke fungsi kamar tersedia
 void addKamar(int NomorKamar)
 {
     Kamar *newKamar = new Kamar;
@@ -92,6 +109,7 @@ void addKamar(int NomorKamar)
     }
 }
 
+// fungsi ini buat ngasih data kamar ke fungsi reservasi
 Kamar *TemukanKamar(int NomorKamar)
 {
     Kamar *current = head;
@@ -111,26 +129,80 @@ Kamar *TemukanKamar(int NomorKamar)
 void Reservasi()
 {
     int NomorKamar;
-    cout << "Masukkan nomor kamar yang ingin dipesan: ";
-    cin >> NomorKamar;
+    string WaktuReservasi;
+    string jawaban;
 
-    Kamar *Kamar = TemukanKamar(NomorKamar);
+    do {
+        system("cls");
+        cout << "Masukkan nomor kamar yang ingin dipesan: ";
+        cin >> NomorKamar;
+        cout << "Masukkan waktu reservasi (hari apa): ";
+        cin >> WaktuReservasi;
 
-    if (Kamar == nullptr)
-    {
-        cout << "Kamar tidak ditemukan." << endl;
-        return;
-    }
+        Kamar *kamar = TemukanKamar(NomorKamar);
 
-    if (!Kamar->Tersedia)
-    {
-        cout << "Kamar sudah dipesan." << endl;
-        return;
-    }
+        if (kamar == nullptr)
+        {
+            cout << "Kamar tidak ditemukan." << endl;
+            cout << "Ingin memesan kamar lain atau kembali? (ya/tidak): ";
+            cin >> jawaban;
+            if (jawaban == "tidak") {
+                cout << endl << "Tekan enter untuk kembali ke menu...";
+                cin.ignore();
+                cin.get();
+                return;
+            }
+        }
+        else if (!kamar->Tersedia)
+        {
+            cout << "Kamar sudah dipesan." << endl;
+            cout << endl << "Tekan enter untuk kembali ke menu...";
+            cin.ignore();
+            cin.get();
+            return;
+        }
+        else
+        {
+            kamar->Tersedia = false;
+            cout << "Kamar " << NomorKamar << " berhasil dipesan pada " << WaktuReservasi << "." << endl;
 
-    Kamar->Tersedia = false;
-    cout << "Kamar " << NomorKamar << " berhasil dipesan." << endl;
+            // Menampilkan data reservasi
+            cout << "Data Reservasi:" << endl;
+            cout << "Nomor Kamar: " << kamar->NomorKamar << endl;
+            cout << "Waktu Reservasi: " << WaktuReservasi << endl;
+
+            cout << endl << "Tekan enter untuk kembali ke menu...";
+            cin.ignore();
+            cin.get();
+            return;
+        }
+    } while (jawaban == "ya");
 }
+
+void DataReservasi()
+{
+    if (head == nullptr)
+    {
+        cout << "Belum ada data reservasi yang disimpan." << endl;
+        return;
+    }
+
+    cout << "Data Reservasi:" << endl;
+    DataReservasi *current = head;
+    while (current != nullptr)
+    {
+        Kamar *kamar = TemukanKamar(current->NomorKamar);
+        if (kamar != nullptr)
+        {
+            cout << "Nomor Kamar: " << kamar->NomorKamar << endl;
+            cout << "Waktu Reservasi: " << current->WaktuReservasi << endl;
+            cout << endl;
+        }
+        current = current->next;
+    }
+}
+
+
 
 void BatalkanKamar()
 {
@@ -158,15 +230,22 @@ void BatalkanKamar()
 
 int main()
 {
+    addKamar(1);
+    addKamar(3);
+    addKamar(4);
+    addKamar(5);
+    addKamar(6);
+    addKamar(7);
+    addKamar(8);
+    addKamar(9);
+
     Login();
-    addKamar(101);
-    addKamar(102);
-    addKamar(103);
 
     int pilihan;
 
     do
     {
+        system("cls");
         Menu();
         cin >> pilihan;
 
